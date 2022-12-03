@@ -14,8 +14,9 @@ main().catch((err) => console.log(err));
 async function main() {
   //localhost ain't working because in config it's binding to 127.0.0.1
   // const url = "mongodb://localhost:27017";
+  const url = process.env.MONGO_URL;
   const dbPath = "/todolistDB";
-  await mongoose.connect(MONGO_URL + dbPath, {
+  await mongoose.connect(url + dbPath, {
     useNewUrlParser: true,
   });
 }
