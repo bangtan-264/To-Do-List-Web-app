@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const _ = require("lodash");
+require("dotenv").config();
 const mongoose = require("mongoose");
 const PORT = process.env.port || 3000;
 
@@ -13,10 +14,8 @@ main().catch((err) => console.log(err));
 async function main() {
   //localhost ain't working because in config it's binding to 127.0.0.1
   // const url = "mongodb://localhost:27017";
-  const url =
-    "mongodb+srv://admin-sahil:sahil1234%40@cluster0.duay5k8.mongodb.net";
   const dbPath = "/todolistDB";
-  await mongoose.connect(url + dbPath, {
+  await mongoose.connect(MONGO_URL + dbPath, {
     useNewUrlParser: true,
   });
 }
