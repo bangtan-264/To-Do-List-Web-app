@@ -1,20 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const date = require(__dirname + "/date.js");
 const _ = require("lodash");
 const mongoose = require("mongoose");
-// const { MongoClient, ServerApiVersion } = require("mongodb");
+const PORT = process.env.port || 3000;
 
 const app = express();
-
-// const items = [
-//   "Wake up",
-//   "You have to study",
-//   "To fulfill all your dreams",
-//   "Remember Hard Work beats Talent",
-//   "Cheer Up!"
-// ];
-// const workItems = [];
 
 // Run main function and catch error
 main().catch((err) => console.log(err));
@@ -30,19 +20,6 @@ async function main() {
     useNewUrlParser: true,
   });
 }
-
-// const uri =
-//   "mongodb+srv://admin-sahil:<password>@cluster0.duay5k8.mongodb.net/?retryWrites=true&w=majority";
-// const client = new MongoClient(uri, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-//   serverApi: ServerApiVersion.v1,
-// });
-// client.connect((err) => {
-//   const collection = client.db("test").collection("devices");
-//   // perform actions on the collection object
-//   client.close();
-// });
 
 const itemsSchema = new mongoose.Schema({
   name: String,
@@ -69,19 +46,12 @@ const listSchema = {
 };
 const List = mongoose.model("List", listSchema);
 
-// Item.insertMany(defaultItems, (err) => {
-//   if (err) console.log(err);
-//   else console.log("Successfull");
-// });
-
 app.set("view engine", "ejs");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.get("/", function (req, res) {
-  // let day = date.getDate();
-
   Item.find({}, function (err, foundItems) {
     if (foundItems.length == 0) {
       //foundItems may be an array of items
@@ -163,18 +133,6 @@ app.post("/delete", function (req, res) {
     });
     res.redirect("/");
   } else {
-    //BUG
-    // List.findOneAndUpdate(
-    //   { name: listName },
-    //   { $pull: { items: { _id: checkedItemId } } },
-    //   function (err, foundList) {
-    //     if (!err) {
-    //       res.redirect("/" + listName);
-    //     } else {
-    //       console.log("Can not delete item from custom list");
-    //     }
-    //   }
-    // );
     List.findOne({ name: listName }, function (err, foundList) {
       foundList.items.pull({ _id: checkedItemId });
       foundList.save(function () {
@@ -194,6 +152,10 @@ app.get("/about", function (req, res) {
   res.render("about");
 });
 
-app.listen(3000, function () {
-  console.log("Server started on port no. 3000");
+app.listen(PORT, async () => {
+  try {
+    console.log(`Server started on port ${PORT}`);
+  } catch (err) {
+    console.log(err.message);
+  }
 });
